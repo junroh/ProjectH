@@ -1,3 +1,2 @@
-# ProjectH
-# Personal project for simple distributed storage
-# Work In Progress
+# ProjectH (WIP)
+Personal project for simple distributed storage
