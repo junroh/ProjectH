@@ -31,7 +31,10 @@ public class ReBalancerConsistHashing {
             // upperbound node is placed less than 0
             reverseCase = true;
         }
-        // TODO: This can be used sorted list
+        // TODO: Potential optimization: Instead of iterating all entries, if srcNode.getEntries() could provide a
+        //  sorted view or allow querying entries within a specific token range (based on entry.getKey() hash),
+        //  it might be possible to optimize the selection of entries to move. This would depend on the
+        //  performance characteristics of Node.getEntries() and the typical number of entries per node.
         try {
             Iterator<Entry> itr = srcNode.getEntries().iterator();
             while (itr.hasNext()) {

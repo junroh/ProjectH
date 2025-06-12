@@ -13,6 +13,7 @@ public class ConsistentHashing implements DataPlacement {
 
     private static final Logger logger = LoggerFactory.getLogger(ConsistentHashing.class);
 
+    // Using Integer.MAX_VALUE to simulate a large continuous ring, assuming the hash function provides good distribution within this range. For specific applications, a smaller, power-of-two value might be more practical and efficient.
     private static final int NUM_OF_SHARDS = Integer.MAX_VALUE;
     //private static final int NUM_OF_SHARDS = 1<<8;
 
@@ -26,6 +27,10 @@ public class ConsistentHashing implements DataPlacement {
         this.hashFunction = config.getHashFunction();
         this.replicaFactor = config.getReplicaFactor();
         initialiseMap(config);
+    }
+
+    protected HashFunction getHashFunction() {
+        return this.hashFunction;
     }
 
     @Override
@@ -101,9 +106,13 @@ public class ConsistentHashing implements DataPlacement {
         return reBalanceWithLowerUpperBound(srcNode, dstNode, lowerBound);
     }
 
+    protected ReBalancerConsistHashing createReBalancer() {
+        return new ReBalancerConsistHashing(this.hashFunction, this);
+    }
+
     protected void initialise() {
         buckets = new TreeMap<>();
-        reBalancer = new ReBalancerConsistHashing(hashFunction, this);
+        reBalancer = createReBalancer();
     }
 
     protected void initialiseMap(Config config) {

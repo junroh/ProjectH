@@ -35,10 +35,11 @@ public class Driver {
         Configurator.initialize(builder.build());
     }
 
-    private static class HashMapDriver {
+    private static class HashingStrategiesDemo {
 
-        private static final Logger logger = LoggerFactory.getLogger(HashMapDriver.class);
+        private static final Logger logger = LoggerFactory.getLogger(HashingStrategiesDemo.class);
 
+        // TODO: This method is for verification and ideally should be part of a dedicated test class.
         private void verifyData(Map<Integer,Integer> validate,
                                     jHashMap<Integer,Integer> candidate1,
                                     jHashMap<Integer,Integer> candidate2) {
@@ -116,19 +117,13 @@ public class Driver {
             // todo: lower bound might not be required...but for vnode...
             //       need to think of that multiple nodes joined and then trigger rebalancing
             Node newNode1 = consistentRing.addNode("test1");
-            //Node newNode2 = consistentRing.addNode("test2");
             int moveCnt = consistentRing.reBalancingTo(newNode1);
             logger.info("Moved " + moveCnt + " to " + newNode1.toString());
-            //moveCnt = consistentRing.reBalancingTo(newNode2);
-            //logger.info("Moved " + moveCnt + ": " + newNode2.toString());
             verifyData(javaMap, myMapConsistent, myMapConsistentVD);
 
             moveCnt = consistentRing.reBalancingFrom(newNode1);
             logger.info("Moved " + moveCnt + " from " + newNode1.toString());
-            //moveCnt = consistentRing.reBalancingFrom(newNode2);
-            //logger.info("Moved " + moveCnt + ": " + newNode2.toString());
             consistentRing.rmNode(newNode1);
-            //consistentRing.rmNode(newNode2);
             verifyData(javaMap, myMapConsistent, myMapConsistentVD);
 
             newNode1 = withVirtualNode.addNode("test1");
@@ -137,45 +132,15 @@ public class Driver {
             logger.info(myMapConsistentVD.toString());
             verifyData(javaMap, myMapConsistent, myMapConsistentVD);
 
-            //newNode2 = withVirtualNode.addNode("test2");
-            //moveCnt = withVirtualNode.reBalancingTo(newNode2);
-            //logger.info("Moved " + moveCnt + ": " + newNode2.toString());
-
             //modular.addNode("test1");
 
-            if(false) {
-            /*
-            myMapChaining.reHash(5);
-            myMapConsistent.reHash(5);
-            logger.info(String.format("Rehasing with size 5. Total number of entries is %d%n", validate.size()));
-            logger.info(myMapChaining.toString());
-            logger.info(myMapConsistent.toString());
-            verifyData(validate, myMapChaining, myMapConsistent);
-            */
-
-                int numofMoves1=0;
-                int numofMoves2=0;
-                //numofMoves1 = myMapChaining.addBucket(1);
-                //numofMoves2 = myMapConsistent.addBucket(1);
-                logger.info(String.format("Add bucket at pos 1 - %d moves vs. %d moves%n", numofMoves1, numofMoves2));
-                logger.info(myMapChaining.toString());
-                logger.info(myMapConsistent.toString());
-                verifyData(javaMap, myMapChaining, myMapConsistent);
-
-                //numofMoves1 = myMapChaining.rmBucket(1);
-                //numofMoves2 = myMapConsistent.rmBucket(1);
-                logger.info(String.format("Remove bucket at pos 1 - %d moves vs. %d moves%n", numofMoves1, numofMoves2));
-                //logger.info(myMapChaining.toString());
-                logger.info(myMapConsistent.toString());
-                verifyData(javaMap, myMapChaining, myMapConsistent);
-            }
             logger.info("Completed");
         }
 
     }
 
     public static void main (String[] args) throws Exception {
-        HashMapDriver hashMapDriver = new HashMapDriver();
+        HashingStrategiesDemo hashMapDriver = new HashingStrategiesDemo();
         hashMapDriver.start();
     }
 
